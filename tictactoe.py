@@ -101,18 +101,18 @@ def winner(board):
 
 
 def is_filled(board):
-    rtn = True
     for i in range(3):
         for j in range(3):
-            rtn = rtn and 
-    return rtn
+            if board[i][j] is None:
+                return False
+    return True
 
 
 def terminal(board):
     """
     Returns True if game is over, False otherwise.
     """
-    return winner(board) is not None or 
+    return winner(board) is not None or is_filled(board)
 
 
 def utility(board):
