@@ -8,6 +8,7 @@ X = "X"
 O = "O"
 EMPTY = None
 
+negative_inf = float('-inf')
 
 def initial_state():
     """
@@ -40,12 +41,12 @@ def actions(board):
     """
     Returns set of all possible actions (i, j) available on the board.
     """
-    s = []
+    actions = []
     for row_idx in range(3):
         for col_idx in range(3):
             if board[row_idx][col_idx] == EMPTY:
-                s.append((row_idx, col_idx))
-
+                actions.append((row_idx, col_idx))
+    return actions
 
 
 def result(board, action):
@@ -59,6 +60,9 @@ def result(board, action):
 
 
 def won_or_no(board, player):
+    """
+    Return if the given player has won or not on the board
+    """
     # hor
     for row in board:
         if (row[0] == player) and (row[1] == player) and (row[2] == player):
@@ -119,11 +123,52 @@ def utility(board):
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
-    raise NotImplementedError
+    winner = winner(board)
+    if winner == X:
+        return 1
+    elif winner == O:
+        return -1
+    else:
+        return 0
+
+
+def min_value(board):
+    """try to minimise the score of the board"""
+    v = float('inf')
+    optimal_action = None
+    if terminal(board):
+        return utility(board)
+    actions = actions(board)
+    for action in actions:
+        v = min(v, max_value(result(board, action)))
+        if max_value(result(board, action)) < v:
+            optimal_action = action
+    return v, optimal_action
+
+
+def max_value(board):
+    """try to maximise the score of the board"""
+    v = negative_inf
+    optimal_action = None
+    if terminal(board):
+        return utility(board)
+    actions = actions(board)
+    for action in actions:
+        v = max(v, min_value(result(board, action)))
+        if min_value(result(board, action)) > v:
+            optimal_action = action
+    return v, optimal_action
 
 
 def minimax(board):
     """
     Returns the optimal action for the current player on the board.
+    X tries to maximise. O tries to minimise
     """
-    raise NotImplementedError
+    if terminal(board):
+        return None
+    player = player(board)
+    actions = actions(board)
+    if player == X:
+        return max_value(board)[1]
+    return min_value(board)[1]
