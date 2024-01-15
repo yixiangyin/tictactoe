@@ -15,8 +15,6 @@ def initial_state():
     """
     Returns starting state of the board.
     """
-    # if DEBUG:
-    #     print("in initial state")
     return [[EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY],
             [EMPTY, EMPTY, EMPTY]]
@@ -68,7 +66,7 @@ def result(board, action):
     return new_board
 
 
-def won_or_no(board, player):
+def if_player_win(board, player):
     """
     Return if the given player has won or not on the board
     """
@@ -98,7 +96,7 @@ def won_or_no(board, player):
     memo = True
     for i in range(3):
         for j in range(2, -1, -1):
-            memo = memo and (board[i][j])
+            memo = memo and (board[i][j] == player)
     if memo:
         return player
     return False
@@ -110,9 +108,9 @@ def winner(board):
     """
     if DEBUG:
         print("in winner")
-    if won_or_no(board, X):
+    if if_player_win(board, X):
         return X
-    if won_or_no(board, O):
+    if if_player_win(board, O):
         return O
     return None
 
