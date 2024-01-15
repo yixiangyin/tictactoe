@@ -38,8 +38,8 @@ def player(board):
             if col == O:
                 o_count += 1
     if x_count >= o_count:
-        return X
-    return O
+        return O
+    return X
 
 
 def actions(board):
