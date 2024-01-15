@@ -66,7 +66,7 @@ def result(board, action):
     return new_board
 
 
-def if_player_win(board, player):
+def if_player_win(board, player) -> bool:
     """
     Return if the given player has won or not on the board
     """
@@ -82,15 +82,15 @@ def if_player_win(board, player):
         for row_idx in range(3):
             memo = memo and (board[row_idx][col_idx] == player)
         if memo:
-            return player
+            return True
     # dia
     # first diagonal
+    # (0,0) (1,1) (2,2)
     memo = True
     for idx in range(3):
         memo = memo and (board[idx][idx] == player)
     if memo:
-        return player
-    # (0,0) (1,1) (2,2)
+        return True
     # (0,2) (1,1) (2,0)
     # second diagonal
     memo = True
@@ -98,7 +98,7 @@ def if_player_win(board, player):
         for j in range(2, -1, -1):
             memo = memo and (board[i][j] == player)
     if memo:
-        return player
+        return True
     return False
 
 
