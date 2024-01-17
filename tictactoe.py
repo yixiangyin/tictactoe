@@ -165,7 +165,7 @@ def utility(board) -> int:
 
 def min_value(board, alpha, beta):
     """try to minimise the score of the board"""
-    log("in min_value")
+    log(f"in min_value with alpha: {alpha} and beta: {beta}")
     min_val = positive_inf
     optimal_action = None
     if terminal(board):
@@ -173,19 +173,20 @@ def min_value(board, alpha, beta):
     actions_ = actions(board)
     for action in actions_:
         val = max_value(result(board, action), alpha, beta)[0]
-        min_val = min(min_val, val)
         # update the optimal action if there is a better option
-        if val == min_val:
+        if val < min_val:
+            min_val = val
             optimal_action = action
         beta = min(beta, min_val)
         if beta <= alpha:
             break
+    log(f"min_value: returning {min_val} with action {optimal_action}")
     return min_val, optimal_action
 
 
 def max_value(board, alpha, beta):
     """try to maximise the score of the board"""
-    log("in max_value")
+    log(f"in max_value with alpha: {alpha} and beta: {beta}")
     max_val = negative_inf
     optimal_action = None
     if terminal(board):
@@ -193,13 +194,13 @@ def max_value(board, alpha, beta):
     actions_ = actions(board)
     for action in actions_:
         val =  min_value(result(board, action), alpha, beta)[0]
-        max_val = max(max_val, val)
-        # update the optimal action if there is a better option
-        if val == max_val:
+        if max_val < val:
+            max_val = val
             optimal_action = action
         alpha = max(alpha, max_val)
         if beta <= alpha:
             break
+    log(f"max_value: returning {max_val} with action {optimal_action}")
     return max_val, optimal_action
 
 
