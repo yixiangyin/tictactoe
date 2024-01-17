@@ -2,7 +2,6 @@
 Tic Tac Toe Player
 """
 import copy
-import math
 
 X = "X"
 O = "O"
@@ -10,7 +9,12 @@ EMPTY = None
 
 negative_inf = float('-inf')
 
-DEBUG = 1
+DEBUG = True
+
+def log(s):
+    if DEBUG:
+        print(s)
+
 def initial_state():
     """
     Returns starting state of the board.
@@ -109,13 +113,18 @@ def winner(board):
     if DEBUG:
         print("in winner")
     if if_player_win(board, X):
+        if DEBUG:
+            print("X won!")
         return X
     if if_player_win(board, O):
+        if DEBUG:
+            print("O won!")
         return O
+    
     return None
 
 
-def is_filled(board):
+def is_filled(board) -> bool:
     if DEBUG:
         print("in is_filled")
     for i in range(3):
@@ -134,7 +143,7 @@ def terminal(board):
     return winner(board) is not None or is_filled(board)
 
 
-def utility(board):
+def utility(board) -> int:
     """
     Returns 1 if X has won the game, -1 if O has won, 0 otherwise.
     """
@@ -159,8 +168,9 @@ def min_value(board):
         return utility(board), optimal_action
     actions_ = actions(board)
     for action in actions_:
-        v = min(v, max_value(result(board, action))[0])
-        if (max_value(result(board, action)))[0] < v:
+        max_var = max_value(result(board, action))[0]
+        v = min(v, max_var)
+        if max_var == v:
             optimal_action = action
     return v, optimal_action
 
@@ -175,12 +185,12 @@ def max_value(board):
         return utility(board), optimal_action
     actions_ = actions(board)
     for action in actions_:
-        v = max(v, min_value(result(board, action))[0])
-        if (min_value(result(board, action)))[0] > v:
+        min_var =  min_value(result(board, action))[0]
+        v = max(v, min_var)
+        if min_var == v:
             optimal_action = action
     return v, optimal_action
 
-    
 
 def minimax(board):
     """
