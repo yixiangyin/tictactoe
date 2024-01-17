@@ -38,7 +38,7 @@ def player(board):
                 x_count += 1
             if col == O:
                 o_count += 1
-    if x_count >= o_count:
+    if x_count > o_count:
         return O
     return X
 
@@ -53,7 +53,7 @@ def actions(board):
         for col_idx in range(3):
             if board[row_idx][col_idx] == EMPTY:
                 actions.append((row_idx, col_idx))
-    return actions
+    return set(actions)
 
 
 def result(board, action):
@@ -61,6 +61,13 @@ def result(board, action):
     Returns the board that results from making move (i, j) on the board.
     """
     log("in result")
+    
+    if not (action[0] > -1 and action[0] < 3):
+        raise ValueError("move out of bound on row")
+    if not (action[1] > -1 and action[1] < 3):
+        raise ValueError("move out of bound on column")
+    if board[action[0]][action[1]] is not None:
+        raise ValueError("The specified postion is not empty.")
     whose_turn = player(board)
     new_board = copy.deepcopy(board)
     new_board[action[0]][action[1]] = whose_turn
