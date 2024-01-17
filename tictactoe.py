@@ -8,8 +8,10 @@ O = "O"
 EMPTY = None
 
 negative_inf = float('-inf')
+positive_inf = float('inf')
 
 DEBUG = True
+
 
 def log(s):
     if DEBUG:
@@ -161,36 +163,44 @@ def utility(board) -> int:
         return 0
 
 
-def min_value(board):
+def min_value(board, alpha, beta):
     """try to minimise the score of the board"""
     log("in min_value")
-    v = float('inf')
+    min_val = positive_inf
     optimal_action = None
     if terminal(board):
         return utility(board), optimal_action
     actions_ = actions(board)
     for action in actions_:
-        max_var = max_value(result(board, action))[0]
-        v = min(v, max_var)
-        if max_var == v:
+        val = max_value(result(board, action), alpha, beta)[0]
+        min_val = min(min_val, val)
+        # update the optimal action if there is a better option
+        if val == min_val:
             optimal_action = action
-    return v, optimal_action
+        beta = min(beta, min_val)
+        if beta <= alpha:
+            break
+    return min_val, optimal_action
 
 
-def max_value(board):
+def max_value(board, alpha, beta):
     """try to maximise the score of the board"""
     log("in max_value")
-    v = negative_inf
+    max_val = negative_inf
     optimal_action = None
     if terminal(board):
         return utility(board), optimal_action
     actions_ = actions(board)
     for action in actions_:
-        min_var =  min_value(result(board, action))[0]
-        v = max(v, min_var)
-        if min_var == v:
+        val =  min_value(result(board, action), alpha, beta)[0]
+        max_val = max(max_val, val)
+        # update the optimal action if there is a better option
+        if val == max_val:
             optimal_action = action
-    return v, optimal_action
+        alpha = max(alpha, max_val)
+        if beta <= alpha:
+            break
+    return max_val, optimal_action
 
 
 def minimax(board):
@@ -203,5 +213,5 @@ def minimax(board):
         return None
     player_ = player(board)
     if player_ == X:
-        return max_value(board)[1]
-    return min_value(board)[1]
+        return max_value(board, negative_inf, positive_inf)[1]
+    return min_value(board, negative_inf, positive_inf)[1]
